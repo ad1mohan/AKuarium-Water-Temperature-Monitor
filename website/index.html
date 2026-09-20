@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#061b2a">
+    <meta
+      name="description"
+      content="AKuarium Aqua Temp Monitor — a read-only dashboard for public ThingSpeak temperature history."
+    >
+    <title>AKuarium Aqua Temp Monitor</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="page-glow page-glow--one" aria-hidden="true"></div>
+    <div class="page-glow page-glow--two" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="AKuarium dashboard home">
+        <img src="../images/channel-logo.svg" alt="AKuarium" class="brand__logo">
+      </a>
+      <p class="site-header__eyebrow"><span class="status-dot" aria-hidden="true"></span> VERDANT tank monitor</p>
+    </header>
+
+    <main id="top" class="page-content">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero__copy">
+          <p class="eyebrow">Public ThingSpeak data, made clear</p>
+          <h1 id="page-title">AKuarium<br><span>Aqua Temp Monitor</span></h1>
+          <p class="hero__description">
+            Explore the water-temperature history of any public ThingSpeak channel — no app,
+            account, or write key required.
+          </p>
+        </div>
+        <div class="hero__watermark" aria-hidden="true">
+          <span>°C</span>
+          <i></i><i></i><i></i>
+        </div>
+      </section>
+
+      <section class="load-panel" aria-labelledby="load-heading">
+        <div class="load-panel__intro">
+          <p class="eyebrow">Connect a channel</p>
+          <h2 id="load-heading">View your aquarium’s temperature story</h2>
+          <p>Enter a public ThingSpeak Channel ID to view aquarium temperature history.</p>
+        </div>
+
+        <form id="channel-form" class="channel-form" novalidate>
+          <label for="channel-id">ThingSpeak Channel ID</label>
+          <div class="channel-form__controls">
+            <input
+              id="channel-id"
+              name="channel-id"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              pattern="[0-9]*"
+              placeholder="Enter your ThingSpeak Channel ID"
+              aria-describedby="channel-help"
+              required
+            >
+            <button id="load-button" class="button button--primary" type="submit">
+              <span class="button__label">Load Channel</span>
+              <span class="button__spinner" aria-hidden="true"></span>
+            </button>
+          </div>
+          <p id="channel-help" class="field-help">Only public, read-enabled channels can be displayed.</p>
+        </form>
+      </section>
+
+      <div id="app-status" class="notice notice--neutral" role="status" aria-live="polite">
+        <span class="notice__icon" aria-hidden="true">⌁</span>
+        <p>Ready when you are. Enter a public channel ID to begin.</p>
+      </div>
+
+      <section id="dashboard" class="dashboard" aria-label="Channel dashboard" hidden>
+        <section class="channel-card" aria-labelledby="channel-name">
+          <div class="channel-card__heading">
+            <div>
+              <p class="eyebrow">Connected channel</p>
+              <h2 id="channel-name">Loading channel…</h2>
+            </div>
+            <span class="read-only-badge">Read only</span>
+          </div>
+          <p id="channel-description" class="channel-card__description"></p>
+          <dl class="channel-details">
+            <div>
+              <dt>Channel ID</dt>
+              <dd id="detail-channel-id">—</dd>
+            </div>
+            <div>
+              <dt>Field 1</dt>
+              <dd id="detail-field-name">—</dd>
+            </div>
+            <div>
+              <dt>Last updated</dt>
+              <dd id="detail-updated">—</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="temperature-section" aria-labelledby="temperature-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Temperature overview</p>
+              <h2 id="temperature-heading">Latest water temperature</h2>
+            </div>
+            <p id="latest-reading-time" class="latest-time">—</p>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card metric-card--primary">
+              <p class="metric-card__label">Current temperature</p>
+              <p id="current-temperature" class="metric-card__value">— <span>°C</span></p>
+              <p class="metric-card__note">Most recent valid Field 1 reading</p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-card__label">Minimum</p>
+              <p id="minimum-temperature" class="metric-card__value">— <span>°C</span></p>
+              <p class="metric-card__note">Across loaded history</p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-card__label">Maximum</p>
+              <p id="maximum-temperature" class="metric-card__value">— <span>°C</span></p>
+              <p class="metric-card__note">Across loaded history</p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-card__label">Average</p>
+              <p id="average-temperature" class="metric-card__value">— <span>°C</span></p>
+              <p class="metric-card__note">Across loaded history</p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-card__label">Readings loaded</p>
+              <p id="reading-count" class="metric-card__value metric-card__value--count">—</p>
+              <p class="metric-card__note">Valid temperature readings</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="chart-card" aria-labelledby="history-heading">
+          <div class="chart-card__topline">
+            <div>
+              <p class="eyebrow">Temperature history</p>
+              <h2 id="history-heading">Water temperature over time</h2>
+            </div>
+            <button id="reset-zoom" class="button button--quiet" type="button" disabled>Reset zoom</button>
+          </div>
+
+          <div class="chart-controls">
+            <div class="range-controls" role="group" aria-label="Temperature history range">
+              <button class="range-button" type="button" data-range="24h" aria-pressed="false">24 Hours</button>
+              <button class="range-button" type="button" data-range="7d" aria-pressed="false">7 Days</button>
+              <button class="range-button" type="button" data-range="30d" aria-pressed="false">30 Days</button>
+              <button class="range-button is-active" type="button" data-range="all" aria-pressed="true">All Time</button>
+            </div>
+            <p id="chart-reading-count" class="chart-reading-count">— readings represented</p>
+          </div>
+
+          <div class="chart-wrap">
+            <canvas
+              id="temperature-chart"
+              role="img"
+              aria-label="Line chart showing aquarium temperature readings over time"
+            ></canvas>
+            <p id="chart-empty-state" class="chart-empty-state" hidden>No readings exist in this time range.</p>
+          </div>
+          <p id="chart-summary" class="chart-summary">Use Ctrl + mouse wheel or pinch to zoom. Drag to pan.</p>
+        </section>
+
+        <section class="refresh-bar" aria-label="Refresh controls">
+          <div>
+            <p class="eyebrow">Data status</p>
+            <p id="refresh-time" class="refresh-bar__time">Last refreshed: —</p>
+          </div>
+          <button id="auto-refresh-toggle" class="toggle-button is-on" type="button" aria-pressed="true">
+            <span class="toggle-button__track" aria-hidden="true"><span></span></span>
+            <span id="auto-refresh-label">Auto refresh: ON</span>
+          </button>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>AKuarium reads publicly available ThingSpeak data. It never uses a write API key.</p>
+    </footer>
+
+    <noscript>
+      <div class="noscript-message">This dashboard needs JavaScript to retrieve public ThingSpeak data.</div>
+    </noscript>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

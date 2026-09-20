@@ -12,6 +12,9 @@
 
 </div>
 
+> 🌐 **Web dashboard (after GitHub Pages is enabled):**
+> [Open the AKuarium dashboard](https://ad1mohan.github.io/AKuarium-Water-Temperature-Monitor/website/)
+
 
 ## 📸 Project
 
@@ -146,6 +149,77 @@ The upload interval is set to **60 seconds**.
 
 ------------------------------------------------------------------------
 
+## 🌐 Web Dashboard
+
+The repository includes a polished, static **AKuarium Aqua Temp Monitor**
+dashboard in [`website/`](website/). It reads a public ThingSpeak channel
+directly in the browser—there is no backend, account, or ThingSpeak Write API
+key involved.
+
+The dashboard:
+
+- accepts a public ThingSpeak Channel ID
+- reads **Field 1** temperature history directly from the ThingSpeak REST API
+- displays the latest temperature, timestamp, minimum, maximum, average, and
+  valid-reading count
+- retrieves history in 8,000-record API chunks so **All Time** is not limited
+  to a single ThingSpeak response
+- provides 24-hour, 7-day, 30-day, and All Time graph views
+- supports chart hover details, zooming, panning, and a five-minute optional
+  auto refresh
+- handles invalid IDs, private channels, empty data, network failures, and
+  invalid Field 1 values with clear messages
+- is designed for desktop, tablet, and mobile use on GitHub Pages
+
+### Using the dashboard
+
+1. Open the [AKuarium dashboard](https://ad1mohan.github.io/AKuarium-Water-Temperature-Monitor/website/) after deploying GitHub Pages.
+2. Enter a public **ThingSpeak Channel ID**.
+3. Select **Load Channel** (or press Enter).
+4. Choose **24 Hours**, **7 Days**, **30 Days**, or **All Time**.
+5. Explore the graph, hover a reading for its exact time and temperature, and
+   optionally leave auto refresh enabled.
+
+### Publish with GitHub Pages
+
+GitHub Pages can publish this repository without a build step. In GitHub, open
+**Settings → Pages**, then under **Build and deployment** choose **Deploy from
+a branch**. Select the `main` branch and the `/ (root)` folder, then save.
+
+Because the dashboard is intentionally kept in the `website/` folder to leave
+the Arduino project untouched, its published address is:
+
+``` text
+https://ad1mohan.github.io/AKuarium-Water-Temperature-Monitor/website/
+```
+
+After the first deployment finishes, GitHub will show the same link in the
+Pages settings. The page uses relative asset paths, so it works under the
+repository's GitHub Pages project URL.
+
+### Data flow
+
+``` text
+ESP8266
+   │
+   │ Wi-Fi
+   ▼
+ThingSpeak
+   │
+   │ REST API (public Field 1 reads)
+   ▼
+AKuarium Web Dashboard
+   │
+   ▼
+GitHub Pages
+```
+
+The Arduino code runs on the ESP8266, ThingSpeak stores the cloud data, and
+the static website reads those public readings when a visitor supplies a
+channel ID. GitHub Pages only hosts the website files.
+
+------------------------------------------------------------------------
+
 ## 🛠️ Arduino IDE Setup
 
 ### 1. Install Arduino IDE
@@ -254,15 +328,24 @@ AKuarium-Water-Temperature-Sensor/
 │   └── AK_Thingspeak.ino
 │
 ├── images/
-│   ├── channel-logo.png
+│   ├── channel-logo.svg
 │   └── poc.jpg
 │   
+│
+├── website/
+│   ├── index.html       # GitHub Pages dashboard markup
+│   ├── style.css        # responsive aquarium-themed styling
+│   └── script.js        # public ThingSpeak API client and chart logic
 │
 └── LICENSE
 ```
 
 Third-party Arduino libraries are **not included in this repository**.
 Install them through the Arduino IDE Library Manager instead.
+
+The sketch under `AK_Thingspeak/` runs on the ESP8266. ThingSpeak receives
+the cloud data, and `website/` is a separate, static read-only dashboard that
+GitHub Pages can host without changing the firmware.
 
 ------------------------------------------------------------------------
 
