@@ -12,7 +12,7 @@
 
 </div>
 
-> 🌐 **Web dashboard (after GitHub Pages is enabled):**
+> 🌐 **Web dashboard:**
 > [Open the AKuarium dashboard](https://ad1mohan.github.io/AKuarium-Water-Temperature-Monitor/website/)
 
 
@@ -153,7 +153,7 @@ The upload interval is set to **60 seconds**.
 
 The repository includes a polished, static **AKuarium Aqua Temp Monitor**
 dashboard in [`website/`](website/). It reads a public ThingSpeak channel
-directly in the browser—there is no backend, account, or ThingSpeak Write API
+directly in the browser—there is no backend, account, or ThingSpeak Read API
 key involved.
 
 The dashboard:
@@ -179,23 +179,6 @@ The dashboard:
 4. Choose **24 Hours**, **7 Days**, **30 Days**, or **All Time**.
 5. Explore the graph, hover a reading for its exact time and temperature, and
    optionally leave auto refresh enabled.
-
-### Publish with GitHub Pages
-
-GitHub Pages can publish this repository without a build step. In GitHub, open
-**Settings → Pages**, then under **Build and deployment** choose **Deploy from
-a branch**. Select the `main` branch and the `/ (root)` folder, then save.
-
-Because the dashboard is intentionally kept in the `website/` folder to leave
-the Arduino project untouched, its published address is:
-
-``` text
-https://ad1mohan.github.io/AKuarium-Water-Temperature-Monitor/website/
-```
-
-After the first deployment finishes, GitHub will show the same link in the
-Pages settings. The page uses relative asset paths, so it works under the
-repository's GitHub Pages project URL.
 
 ### Data flow
 
@@ -448,7 +431,3 @@ progress sequence before entering the main monitoring screen.
 
 This project is part of the **AKuarium** project series.
 
-The build can be followed from:
-
-**Hardware → Wiring → Arduino IDE setup → Blink test → Firmware upload →
-ThingSpeak → Final monitoring**
